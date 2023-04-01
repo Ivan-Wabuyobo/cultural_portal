@@ -60,7 +60,7 @@ include "dbconnect.php";
           $transaction_id = "#".date('Ym').time();
           $sql = "INSERT INTO `logs`(`transaction_id`, `transaction_type`, `user`) VALUES ('$transaction_id', 'Logged in into the system successfully', '$username')";
           $conn->query($sql);
-        header("location: index.php");
+        header("location: home.php");
         }
       }
     }
