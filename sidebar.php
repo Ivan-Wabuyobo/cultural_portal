@@ -65,9 +65,9 @@
                     </a>
                 </li>
                 <li>
-                    <a href="" class="waves-effect">
+                    <a href="chat.php" class="waves-effect">
                         <i class="bx bx-message-rounded-dots text-success text-success"></i>
-                        <span key="t-file-manager">SMS center</span>
+                        <span key="t-file-manager">Chat center</span>
                     </a>
                 </li>
 
