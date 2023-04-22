@@ -1,13 +1,14 @@
 <?php
 session_start();
+if(!isset($_SESSION['user'])){
+    header("location:login.php");
+  }
 include "dbconnect.php";
 
 ?>
 <!doctype html>
 <html lang="en">
-
 <head>
-
     <meta charset="utf-8" />
     <title>Cultural Portal</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,14 +33,10 @@ include "dbconnect.php";
     <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
 
-
-
 </head>
 
 <body data-sidebar="dark" data-layout-mode="light">
-
     <!-- <body data-layout="horizontal" data-topbar="dark"> -->
-
     <!-- Begin page -->
     <div id="layout-wrapper">
 
@@ -70,7 +67,6 @@ include "dbconnect.php";
                 </div>
 
                 <div class="d-flex">
-
                     <div class="dropdown d-inline-block d-lg-none ms-2">
                         <button type="button" class="btn header-item noti-icon waves-effect" id="page-header-search-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="mdi mdi-magnify"></i>
@@ -90,15 +86,11 @@ include "dbconnect.php";
                         </div>
                     </div>
                     <div class="dropdown d-inline-block">
-
                         <button type="submit" class="btn header-item waves-effect" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="bx bx-user text-success" style="font-size: 35px;"></i>
                             <span class="d-none d-xl-inline-block ms-1" key="t-henry"><?php echo $_SESSION['user']['username'] ?></span>
                             <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                         </button>
-
-
-
                         <div class="dropdown-menu dropdown-menu-end">
                             <!-- item-->
                             <a class="dropdown-item" href="#"><i class="bx bx-user font-size-16 align-middle me-1"></i>
@@ -118,10 +110,7 @@ include "dbconnect.php";
                 </div> <!-- container-fluid -->
             </div>
             <!-- End Page-content -->
-
-
             <footer class="footer ">
-
                 <div class="row">
                     <div class="col-sm-12 text-center font-size-15">
                         <script>
@@ -141,8 +130,6 @@ include "dbconnect.php";
     <div class="rightbar-overlay"></div>
 
     <!-- JAVASCRIPT -->
-
-
     <script src="assets/libs/jquery/jquery.min.js"></script>
     <script src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="assets/libs/metismenu/metisMenu.min.js"></script>
@@ -161,17 +148,12 @@ include "dbconnect.php";
     <script src="assets/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
     <script src="assets/libs/datatables.net-buttons/js/buttons.print.min.js"></script>
     <script src="assets/libs/datatables.net-buttons/js/buttons.colVis.min.js"></script>
-
     <!-- Responsive examples -->
     <script src="assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
     <script src="assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
-
     <!-- Datatable init js -->
     <script src="assets/js/pages/datatables.init.js"></script>
-
     <script src="assets/js/app.js"></script>
-
-
 </body>
 
 <!-- Mirrored from themesbrand.com/skote/layouts/tables-datatable.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 24 Mar 2023 19:08:49 GMT -->

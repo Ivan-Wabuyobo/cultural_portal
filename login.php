@@ -52,7 +52,7 @@ include "dbconnect.php";
           $transaction_id = "#".date('Ym').time();
           $sql = "INSERT INTO `logs`(`transaction_id`, `transaction_type`, `user`) VALUES ('$transaction_id', 'Logged in into the system successfully', '$username')";
           $conn->query($sql);
-        header("location: article.php");
+        header("location: articlePortal.php");
         }else{
        
           $_SESSION['user'] = $user;
@@ -60,7 +60,7 @@ include "dbconnect.php";
           $transaction_id = "#".date('Ym').time();
           $sql = "INSERT INTO `logs`(`transaction_id`, `transaction_type`, `user`) VALUES ('$transaction_id', 'Logged in into the system successfully', '$username')";
           $conn->query($sql);
-        header("location: home.php");
+        header("location: udashboard.php");
         }
       }
     }

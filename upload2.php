@@ -13,8 +13,8 @@ if (!empty($_FILES)) {
     $uploaded_by = $_SESSION['user']['user_id'];
     $targetFile = $targetDir.time().basename($file["name"]);
     if (move_uploaded_file($file["tmp_name"], $targetFile)) {
-        $sql = "INSERT INTO `video`(`title`, `description`, `tribe`, `clan`, `video_size`, `uploaded_by`) 
-        VALUES ('$title', '$description', '$tribe', '$clan', '$size', '$uploaded_by')";
+        $sql = "INSERT INTO `video`(`title`, `description`, `file`, `tribe`, `clan`, `video_size`, `uploaded_by`) 
+        VALUES ('$title', '$description', '$targetFile', '$tribe', '$clan', '$size', '$uploaded_by')";
         $results = $conn->query($sql);
         if ($results) {
             $username =  $_SESSION['user']['username'];

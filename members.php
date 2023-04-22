@@ -1,5 +1,8 @@
 <?php
 session_start();
+if(!isset($_SESSION['user'])){
+    header("location:login.php");
+  }
 include "dbconnect.php";
 
 ?>
@@ -47,6 +50,7 @@ include "dbconnect.php";
         if ($results) {
             $username =  $_SESSION['user']['username'];
             $transaction_id = "#" . date('Ym') . time();
+            $userId = mysqli_insert_id($conn);
             $sql = "INSERT INTO `logs`(`transaction_id`, `transaction_type`, `user`) VALUES ('$transaction_id', 'A new member was added', '$username')";
             $conn->query($sql);
 
@@ -54,7 +58,6 @@ include "dbconnect.php";
               $username = $contact;
               $role = "2";
               $password = time();
-              $userId = mysqli_insert_id($conn);
               $sql = "INSERT INTO `users`(`username`, `password`, `role`, `user_id`)
                            VALUES ('$username', '$password', '$role', '$userId')";
               $conn->query($sql);

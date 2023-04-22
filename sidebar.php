@@ -1,7 +1,6 @@
 <div class="vertical-menu">
 
     <div data-simplebar class="h-100">
-
         <!--- Sidemenu -->
         <div id="sidebar-menu">
             <!-- Left Menu Start -->
@@ -65,12 +64,42 @@
                     </a>
                 </li>
                 <li>
-                    <a href="" class="waves-effect">
-                        <i class="bx bx-message-rounded-dots text-success text-success"></i>
-                        <span key="t-file-manager">SMS center</span>
+                    <a href="admin_music.php" class="waves-effect">
+                        <i class="bx bx-music text-success text-success"></i>
+                        <span key="t-file-manager">Music</span>
                     </a>
                 </li>
-
+                <li>
+                    <a href="admin_food.php" class="waves-effect">
+                        <i class="bx bx-dish text-success text-success"></i>
+                        <span key="t-file-manager">Food</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="admin_fashion.php" class="waves-effect">
+                        <i class="bx bxs-t-shirt text-success text-success"></i>
+                        <span key="t-file-manager">Fashion and Design</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="chat.php" class="waves-effect">
+                        <i class="bx bx-message-rounded-dots text-success text-success"></i>
+                        <span key="t-file-manager">Chat center</span>
+                    </a>
+                </li>
+                <li class="menu-title text-warning" key="t-apps">quiz Center</li>
+                <li>
+                    <a href="quiz.php" class="waves-effect">
+                        <i class="bx bxs-comment-add text-success text-success"></i>
+                        <span key="t-file-manager">Quizes</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="adminquiz.php" class="waves-effect">
+                    <i class='bx bxl-discourse text-success'></i>
+                        <span key="t-file-manager">View Quizes</span>
+                    </a>
+                </li>
             </ul>
         </div>
         <!-- Sidebar -->
