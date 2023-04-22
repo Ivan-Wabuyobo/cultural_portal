@@ -47,6 +47,7 @@ include "dbconnect.php";
                 VALUES ('$surname', '$othernames', '$email', '$contact', '$address', '$tribe', '$clan')";
         $results = $conn->query($sql);
         if ($results) {
+            $userId = mysqli_insert_id($conn);
             $username =  $_SESSION['user']['username'];
             $transaction_id = "#" . date('Ym') . time();
             $sql = "INSERT INTO `logs`(`transaction_id`, `transaction_type`, `user`) VALUES ('$transaction_id', 'A new contributor added', '$username')";
@@ -56,7 +57,6 @@ include "dbconnect.php";
             $username = $contact;
             $role = "1";
             $password = time();
-            $userId = mysqli_insert_id($conn);
             $sql = "INSERT INTO `users`(`username`, `password`, `role`, `user_id`)
                          VALUES ('$username', '$password', '$role', '$userId')";
             $conn->query($sql);
