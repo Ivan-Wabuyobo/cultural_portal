@@ -20,6 +20,12 @@
                     </a>
 
                 </li>
+                <li>
+                    <a href="user_translations.php" class="waves-effect">
+                        <i class="bx bx-user text-success"></i>
+                        <span key="t-dashboards">Translations</span>
+                    </a>
+                </li>
 
                 <li>
                     <a href="music.php" class="waves-effect">

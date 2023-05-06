@@ -64,6 +64,14 @@
                     </a>
                 </li>
                 <li>
+                    <a href="admin_translation.php" class="waves-effect">
+                        <i class="bx bx-file text-success text-success"></i>
+                        <span key="t-file-manager">
+                            Translations
+                        </span>
+                    </a>
+                </li>
+                <li>
                     <a href="admin_music.php" class="waves-effect">
                         <i class="bx bx-music text-success text-success"></i>
                         <span key="t-file-manager">Music</span>
