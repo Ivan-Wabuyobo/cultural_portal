@@ -62,7 +62,7 @@ include "dbconnect.php";
         <?php include "header.php" ?>
 
         <!-- ========== Left Sidebar Start ========== -->
-        <?php include "/var/www/html/portal/usersidebar.php" ?>
+        <?php include "usersidebar.php" ?>
         <!-- Left Sidebar End -->
 
         <!-- ============================================================== -->
