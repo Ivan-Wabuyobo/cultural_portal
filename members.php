@@ -65,6 +65,33 @@ include "dbconnect.php";
         }
     }
 
+    if (isset($_POST['edit_member'])) {
+        $id = $_POST['id'];
+        $surname = $_POST['surname'];
+        $othernames = $_POST['othernames'];
+        $contact = $_POST['contact'];
+        $email = $_POST['email'];
+        $address = $_POST['address'];
+        $tribe = $_POST['tribe'];
+        $clan = $_POST['clan'];
+        $sql = "UPDATE `members` SET `surname`='$surname',`contact`='$contact',`tribe`='$tribe',`clan`='$clan',`other_names`='$othernames',`address`='$address' WHERE id = '$id'";
+        $results = $conn->query($sql);
+        if ($results) {
+            $username =  $_SESSION['user']['username'];
+            $transaction_id = "#" . date('Ym') . time();
+            $userId = mysqli_insert_id($conn);
+            $sql = "INSERT INTO `logs`(`transaction_id`, `transaction_type`, `user`) VALUES ('$transaction_id', 'updated member details', '$username')";
+            $conn->query($sql);
+  
+        }
+    }
+
+    if(isset($_POST['delete'])){
+        $id = $_POST['id'];
+        $sql = "DELETE FROM `members` WHERE id = '$id'";
+        $conn->query($sql);
+    }
+
 
     ?>
 
@@ -93,7 +120,7 @@ include "dbconnect.php";
                     <div class="row">
                         <div class="col-12">
                             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                                <h4 class="mb-sm-0 font-size-18">Registered system Contributors</h4>
+                                <h4 class="mb-sm-0 font-size-18">Registered members</h4>
                             </div>
                         </div>
                     </div>
@@ -160,10 +187,10 @@ include "dbconnect.php";
                                                     <td><?php echo time_ago($members['created_at']) ?></td>
                                                     <td>
                                                         <div class="input-group mb-3">
-                                                            <button class="btn">
+                                                            <button class="btn" onclick="getData( `<?php echo $members['id']; ?>`, `<?php echo $members['surname']; ?>`, ` <?php echo $members['other_names']; ?>`, `<?php echo $members['contact']; ?>`, `<?php echo $members['address']; ?>`)" data-bs-toggle="modal" data-bs-target="#editmember">
                                                                 <i class="bx bx-pencil text-success " style="font-size: 20px;"></i>
                                                             </button>
-                                                            <button class="btn">
+                                                            <button class="btn" onclick="getId(id)" data-bs-toggle="modal" data-bs-target="#deletecontributor" >
                                                                 <i class="bx bx-trash-alt text-danger" style="font-size: 20px;"></i>
                                                             </button>
 
@@ -336,6 +363,110 @@ include "dbconnect.php";
     </div>
 
     <!--end  Modal -->
+
+    <!--Add  Modal -->
+    <div class="modal fade" id="editmember" tabindex="-1" aria-labelledby="addContributor" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Member</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form  action="" method="POST">
+                        <input type="text" id="id" name="id">
+                        <div class="mb-4">
+                            <div class="input-group input-group-lg">
+                                <input type="text" class="form-control" name="surname" placeholder="Surname" id="surname">
+                                <span class="input-group-text">
+                                    <i class="bx bx-user-check"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <div class="input-group input-group-lg">
+                                <input type="text" class="form-control" name="othernames" placeholder="Othernames" id="othernames">
+                                <span class="input-group-text">
+                                    <i class="bx bx-user-check"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <select class="form-select" aria-label="Tribe" name="tribe" id='tribe2' onchange="populateClans2()">
+                                <option selected>Choose Tribe</option>
+                                <?php
+                                $sql = "SELECT * FROM `tribes`";
+                                $results = $conn->query($sql);
+                                while ($tribe = $results->fetch_assoc()) {
+                                ?>
+
+                                    <option value="<?php echo $tribe['tribe_id'] ?>"><?php echo $tribe['name'] ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <select class="form-select" aria-label="Clan" name="clan" id='clan2'>
+                                <option selected>Choose Your Clan</option> 
+                            </select>   
+                        </div>
+                        <div class="mb-4">
+                            <div class="input-group input-group-lg">
+                                <input type="text" class="form-control" name="contact" placeholder="contact" id="contact">
+                                <span class="input-group-text">
+                                    <i class="bx bxs-phone-call"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <div class="input-group input-group-lg">
+                                <input type="text" class="form-control" name="address" placeholder="Address" id="address">
+                                <span class="input-group-text">
+                                    <i class="bx bxs-map"></i>
+                                </span>
+                            </div>
+                        </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success" name="edit_member">Save Changes</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--end  Modal -->
+
+      <!--  Modal -->
+      <div class="modal fade" id="deletecontributor" tabindex="-1" aria-labelledby="addContributor" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Delete  member</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="js-validation-signin" action="" method="POST">
+                        <input type="hidden" name="id" id="id2">
+                        <div class="mb-4">
+                            <h3 class="text-warning">
+                                Are you sure you want to delete this member
+                            </h3>
+                        </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger" name="delete">Proceed</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--end  Modal -->
     <!-- JAVASCRIPT -->
     <script src="assets/libs/jquery/jquery.min.js"></script>
     <script src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -386,6 +517,43 @@ include "dbconnect.php";
                 };
                 
                 }
+
+                function populateClans2() {
+                // get the selected tribe id
+                const tribeId = document.getElementById('tribe2').value;
+
+                // make an AJAX request to fetch the clans for the selected tribe
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', 'getClans.php?tribe=' + tribeId, true);
+                xhr.send();
+                xhr.onreadystatechange = function() {
+                    if (this.readyState === 4 && this.status === 200) {
+                    // parse the response JSON and populate the clans select element with the options
+                    const clans = JSON.parse(this.responseText);
+                    const clanSelect = document.getElementById('clan2');
+                    clanSelect.innerHTML = '<option value="">Select a clan</option>';
+                    clans.forEach((clan)=> {
+                        clanSelect.innerHTML += '<option value="' + clan.clan_id + '">' + clan.clan_name + '</option>';
+                    });
+                    }
+                };
+                
+            }
+
+
+            function getData(id, surname, othernames, contact, address){
+                
+                 document.getElementById('id').value = id;
+                 document.getElementById('surname').value = surname;
+                 document.getElementById('othernames').value = othernames;
+                 document.getElementById('contact').value = contact;
+                 document.getElementById('address').value = address;
+            }
+
+            function getId(id){
+                document.getElementById('id2').value = id;
+
+            }
 
         </script>
 

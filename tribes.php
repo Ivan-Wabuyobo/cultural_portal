@@ -63,6 +63,11 @@ include "dbconnect.php";
             $conn->query($sql);
         }
     }
+    if(isset($_POST['delete'])){
+        $id = $_POST['id'];
+        $sql = "DELETE FROM `tribes` WHERE tribe_id = '$id'";
+        $conn->query($sql);
+    }
     ?>
     <!-- <body data-layout="horizontal" data-topbar="dark"> -->
 
@@ -149,10 +154,7 @@ include "dbconnect.php";
                                                 <td><?php echo time_ago($tribes['tribe_created_at'])?></td>
                                                 <td>
                                                     <div class="input-group mb-3">
-                                                        <button class="btn">
-                                                            <i class="bx bx-pencil text-success " style="font-size: 20px;"></i>
-                                                        </button>
-                                                        <button class="btn">
+                                                        <button onclick="getId(<?php echo $tribes['tribe_id'] ?>)" class="btn" data-bs-toggle="modal" data-bs-target="#deletecontributor">
                                                             <i class="bx bx-trash-alt text-danger" style="font-size: 20px;"></i>
                                                         </button>
 
@@ -273,6 +275,34 @@ include "dbconnect.php";
     </div>
 
     <!--end  Modal -->
+       <!--  Modal -->
+       <div class="modal fade" id="deletecontributor" tabindex="-1" aria-labelledby="addContributor" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Delete  Tribe</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="js-validation-signin" action="" method="POST">
+                        <input type="hidden" name="id" id="id2">
+                        <div class="mb-4">
+                            <h3 class="text-warning">
+                                Are you sure you want to delete this tribe details
+                            </h3>
+                        </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger" name="delete">Proceed</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--end  Modal -->
 
     <!-- Right bar overlay-->
     <div class="rightbar-overlay"></div>
@@ -329,6 +359,13 @@ include "dbconnect.php";
     <script src="assets/js/pages/datatables.init.js"></script>
 
     <script src="assets/js/app.js"></script>
+    <script>
+        
+            function getId(id){
+                document.getElementById('id2').value = id;
+            }
+        
+    </script>
 
 </body>
 
