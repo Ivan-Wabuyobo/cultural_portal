@@ -35,9 +35,10 @@ include "dbconnect.php";
     <?php
     if (isset($_POST['add_clan'])) {
         $name = $_POST['name'];
+        $tribe = $_POST['tribe'];
         $leader = $_POST['leader'];
         $location = $_POST['location'];
-        $sql = "INSERT INTO `clans`(`clan_name`, `clan_leader`, `location`) VALUES ('$name', '$leader', '$location')";
+        $sql = "INSERT INTO `clans`(`tribe_id`, `clan_name`, `clan_leader`, `location`) VALUES ('$tribe', '$name', '$leader', '$location')";
         $results = $conn->query($sql);
         if ($results) {
             $username =  $_SESSION['user']['username'];
@@ -197,6 +198,19 @@ include "dbconnect.php";
                             <div class="input-group input-group-lg">
                                 <input type="text" class="form-control" name="name" placeholder="Clan name">
                             </div>
+                        </div>
+                        <div class="mb-4">
+                            <select class="form-select" aria-label="Tribe" name="tribe" id='tribe'>
+                                <option selected>Choose Tribe</option>
+                                <?php
+                                $sql = "SELECT * FROM `tribes`";
+                                $results = $conn->query($sql);
+                                while ($tribe = $results->fetch_assoc()) {
+                                ?>
+
+                                    <option value="<?php echo $tribe['tribe_id'] ?>"><?php echo $tribe['name'] ?></option>
+                                <?php } ?>
+                            </select>
                         </div>
                         <div class="mb-4">
                             <div class="input-group input-group-lg">

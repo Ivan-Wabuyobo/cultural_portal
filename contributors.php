@@ -233,8 +233,8 @@ include "dbconnect.php";
                             </div>
                         </div>
                         <div class="mb-4">
-                            <select class="form-select" aria-label="Tribe" name="tribe">
-                                <option selected>Add Tribe</option>
+                            <select class="form-select" aria-label="Tribe" name="tribe" id='tribe' onchange="populateClans()">
+                                <option selected>Choose Tribe</option>
                                 <?php
                                 $sql = "SELECT * FROM `tribes`";
                                 $results = $conn->query($sql);
@@ -246,19 +246,9 @@ include "dbconnect.php";
                             </select>
                         </div>
                         <div class="mb-4">
-                            <select class="form-select" aria-label="Clan" name="clan">
-                                <option selected>Add Clan</option>
-                                <?php
-                                $sql = "SELECT * FROM `clans`";
-                                $results = $conn->query($sql);
-                                while ($clan = $results->fetch_assoc()) {
-                                ?>
-
-                                    <option value="<?php echo $clan['clan_id'] ?>"><?php echo $clan['clan_name'] ?></option>
-                                <?php } ?>
-                            </select>
-
-                            </select>
+                            <select class="form-select" aria-label="Clan" name="clan" id='clan'>
+                                <option selected>Choose Your Clan</option> 
+                            </select>   
                         </div>
                         <div class="mb-4">
                             <div class="input-group input-group-lg">
@@ -326,6 +316,30 @@ include "dbconnect.php";
     <script src="assets/js/pages/datatables.init.js"></script>
 
     <script src="assets/js/app.js"></script>
+    <script>                
+            function populateClans() {
+                // get the selected tribe id
+                const tribeId = document.getElementById('tribe').value;
+
+                // make an AJAX request to fetch the clans for the selected tribe
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', 'getClans.php?tribe=' + tribeId, true);
+                xhr.send();
+                xhr.onreadystatechange = function() {
+                    if (this.readyState === 4 && this.status === 200) {
+                    // parse the response JSON and populate the clans select element with the options
+                    const clans = JSON.parse(this.responseText);
+                    const clanSelect = document.getElementById('clan');
+                    clanSelect.innerHTML = '<option value="">Select a clan</option>';
+                    clans.forEach((clan)=> {
+                        clanSelect.innerHTML += '<option value="' + clan.clan_id + '">' + clan.clan_name + '</option>';
+                    });
+                    }
+                };
+                
+                }
+
+        </script>
 
 </body>
 
