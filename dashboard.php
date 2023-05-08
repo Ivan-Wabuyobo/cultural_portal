@@ -2,7 +2,9 @@
 session_start();
 if(!isset($_SESSION['user'])){
     header("location:login.php");
-  }
+  }elseif ($_SESSION['user']['role'] != 0){
+    header("location:login.php");
+}
 include "dbconnect.php";
 
 ?>
@@ -252,8 +254,6 @@ include "dbconnect.php";
 
     </div>
     <!-- END layout-wrapper -->
-
-   
 
     <!-- Right bar overlay-->
     <div class="rightbar-overlay"></div>

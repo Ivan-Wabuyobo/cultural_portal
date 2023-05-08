@@ -1,11 +1,19 @@
 <?php
 session_start();
-if (!isset($_SESSION['user'])) {
-    header("location:login.php");
-}elseif ($_SESSION['user']['role'] != 0){
-    header("location:login.php");
-}
 include "dbconnect.php";
+
+//Getting the tribe id
+$userId = $_SESSION['user']['user_id'];
+$role = $_SESSION['user']['role'];
+$username = $_SESSION['user']['username'];
+
+if ($role == 2) {
+    $query = "SELECT * FROM `members` WHERE id='$userId'";
+    $tribe = $conn->query($query)->fetch_assoc()['tribe'];
+} else {
+    $query = "SELECT * FROM `contributors` WHERE id='$userId'";
+    $tribe = $conn->query($query)->fetch_assoc()['tribe'];
+}
 
 ?>
 <!doctype html>
@@ -14,7 +22,7 @@ include "dbconnect.php";
 <head>
 
     <meta charset="utf-8" />
-    <title>Quiz Center</title>
+    <title>Translations</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
     <meta content="Themesbrand" name="author" />
@@ -45,25 +53,27 @@ include "dbconnect.php";
             min-height: 150px !important;
         }
     </style>
-
     <!-- <body data-layout="horizontal" data-topbar="dark"> -->
 
     <!-- Begin page -->
     <div id="layout-wrapper">
+
         <?php include "header.php" ?>
+
         <!-- ========== Left Sidebar Start ========== -->
-        <?php include "sidebar.php" ?>
+        <?php include "usersidebar.php" ?>
         <!-- Left Sidebar End -->
         <div class="main-content">
+
             <div class="page-content">
                 <div class="container-fluid">
-                    <!-- start page title -->
-                    <div class="row">
-                        <form action="" method="post">
+
+                <form action="" method="post">
                             <div class="col-3">
-                                <div class="form-floating mb-2">
-                                    <select class="form-select" id="floatingSelect" aria-label="Floating label select example" name="tribe">
-                                        <option selected></option>
+                                <div class="mb-2">
+                                    <label for="floatingSelect">Check out from other tribes</label>
+                                    <select class="form-control" id="floatingSelect" aria-label="Floating label select example" name="tribe">
+                                        <option selected> Select Tribe</option>
                                         <?php
                                         $query = "SELECT * FROM `tribes`";
                                         $tribes = $conn->query($query);
@@ -72,8 +82,6 @@ include "dbconnect.php";
                                             <option value="<?php echo $rows['tribe_id'] ?>"><?php echo $rows['name'] ?></option>
                                         <?php } ?>
                                     </select>
-                                    <label for="">Filter by Tribe</label>
-
                                 </div>
 
                             </div>
@@ -82,65 +90,80 @@ include "dbconnect.php";
                             </div>
                         </form>
 
-                    </div>
-                    <!-- end page title -->
-                  
-                        <?php
-                        if(isset($_POST['filter'])){
-                            $id = $_POST['tribe'];
-                            $query = "SELECT * FROM `questions` WHERE tribe_id='$id' ORDER BY tribe_id DESC";
-
-                        }else{
-                            $query = "SELECT * FROM `questions` ORDER BY tribe_id DESC";
-
-                        }
-                        $results = $conn->query($query);
-                        $sn = 1;
-                        if($results->num_rows > 0){
-
-                        while ($questions = $results->fetch_assoc()) {
-
-                            $question = $questions['text'];
-                            $question_number = $questions['question'];
-                        ?>
-
-                            <h2 class="mb-4"> <?php echo $sn . ".  "; ?><?php echo $question ?></h2>
+                        <div class="row">
                             <?php
-                            //Get the choices to the question
 
-                            $sql = "SELECT * FROM `choices` WHERE choices.question_number = '$question_number'";
-                            $result = $conn->query($sql);
-                            $name = 1;
+                            function time_ago($datetime)
+                            {
+                                $timestamp = strtotime($datetime);
+                                $difference = time() - $timestamp;
 
-                            while ($choices = $result->fetch_assoc()) { ?>
-                                <div class="form-check mb-2" style="margin-left: 30px">
-                                    <input class="form-check-input" type="checkbox" value="<?php echo $choices['is_correct']; ?>" name="<?php echo $name; ?>" <?php if ($choices['is_correct'] == 1) {
-                                                                                                                                                                    echo "checked";
-                                                                                                                                                                } ?>>
-                                    <label class="form-check-label text-warning" for="flexCheckDefault" style="font-family: sans-serif;">
-                                        <?php echo $choices['choice'] ?>
-                                    </label>
-                                </div>
-                            <?php $name = $name + 1;
-                            } ?>
-                        <?php $sn = $sn + 1;
-                        } }else{?>
-                        
-                        <div class="text-center">
-                        <i class='bx bx-error-alt bx-lg text-danger'></i>
-                            <h1 class="text-danger">
-                                No quizes Available
-                            </h1>
+                                if ($difference < 60) {
+                                    return $difference . " secs ago";
+                                } elseif ($difference < 3600) {
+                                    return round($difference / 60) . " mins ago";
+                                } elseif ($difference < 86400) {
+                                    return round($difference / 3600) . " hours ago";
+                                } elseif ($difference < 31536000) {
+                                    return round($difference / 86400) . " days ago";
+                                } else {
+                                    return round($difference / 31536000) . " years ago";
+                                }
+                            }
+                            if (isset($_POST['filter'])) {
+                                $id = $_POST['tribe'];
+                                $query = "SELECT * FROM `translation` JOIN tribes ON translation.tribe = tribes.tribe_id WHERE translation.tribe = '$id' ORDER BY translation.id DESC";
+                            } else {
+                                $query = "SELECT * FROM `translation` JOIN tribes ON translation.tribe = tribes.tribe_id WHERE translation.tribe = '$tribe' ORDER BY translation.id DESC";
+                            }
+
+                            $results = $conn->query($query);
+
+                            if ($results->num_rows > 0){
+                                $sn = 0;
+                                ?>
+
+                                    <table class="table table-dark table-striped-columns">
+                                    <thead>
+                                        <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">English Term</th>
+                                        <th scope="col">Corresponding Translation</th>
+                                        <th scope="col">Tribe</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                       
+                                       
+                                   
+                            <?php while ($data = $results->fetch_assoc()) {
+                                $sn = $sn + 1;
+                            ?>
+                             <tr>
+                                            <th scope="row"><?php echo $sn; ?></th>
+                                            <td><?php echo $data['english_word']?></td>
+                                            <td><?php echo $data['local_translation']?></td>
+                                            <td><?php echo $data['name']?></td>
+                                        </tr>
+                                    
+                                <?php }?>
+                                </tbody>
+                                    </table>
+                           <?php } else { ?>
+                                <h1 class="text-danger">
+
+                                    No Translations Found!!!
+                                </h1>
+                            <?php } ?>
                         </div>
-                        <?php } ?>
-                    
+
                 </div> <!-- container-fluid -->
             </div>
             <!-- End Page-content -->
 
 
-            <footer class="footer text-center">
-                <div class="container-fluid text-center">
+            <footer class="footer">
+                <div class="container-fluid">
                     <div class="row text-center">
                         <div class="col-sm-12">
                             <script>
@@ -156,8 +179,7 @@ include "dbconnect.php";
     </div>
     <!-- END layout-wrapper -->
 
-    </div>
-
+    <
     <!--end  Modal -->
 
     <!-- Right bar overlay-->

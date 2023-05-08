@@ -63,6 +63,32 @@ include "dbconnect.php";
 
         }
     }
+    if (isset($_POST['edit_contributor'])) {
+        $id = $_POST['id'];
+        $surname = $_POST['surname'];
+        $othernames = $_POST['othernames'];
+        $contact = $_POST['contact'];
+        $email = $_POST['email'];
+        $address = $_POST['address'];
+        $tribe = $_POST['tribe'];
+        $clan = $_POST['clan'];
+        $sql = "UPDATE `contributors` SET `full_name`='$surname',`other_names`='$othernames',`email`='$email',`contact`='$contact',`address`='$address',`tribe`='$tribe',`clan`='$clan' WHERE contributors.id = '$id'";
+        $results = $conn->query($sql);
+        if ($results) {
+            $userId = mysqli_insert_id($conn);
+            $username =  $_SESSION['user']['username'];
+            $transaction_id = "#" . date('Ym') . time();
+            $sql = "INSERT INTO `logs`(`transaction_id`, `transaction_type`, `user`) VALUES ('$transaction_id', 'updated contributor details', '$username')";
+            $conn->query($sql);
+
+        }
+    }
+
+    if(isset($_POST['delete'])){
+        $id = $_POST['id'];
+        $sql = "DELETE FROM `contributors` WHERE id = '$id'";
+        $conn->query($sql);
+    }
 
 
     ?>
@@ -159,10 +185,10 @@ include "dbconnect.php";
 
                                                     <td>
                                                         <div class="input-group mb-3">
-                                                            <button class="btn">
+                                                            <button onclick="getData(<?php echo $contributors['id'] ?>, `<?php echo  $contributors['full_name']?>`, `<?php echo $contributors['other_names']?>`, `<?php echo $contributors['contact'] ?>`, `<?php echo $contributors['email']?>`, `<?php echo $contributors['address'] ?>`)" class="btn" data-bs-toggle="modal" data-bs-target="#editContributor">
                                                                 <i class="bx bx-pencil text-success " style="font-size: 20px;"></i>
                                                             </button>
-                                                            <button class="btn">
+                                                            <button onclick="getId(<?php echo $contributors['id'] ?>)" class="btn" data-bs-toggle="modal" data-bs-target="#deletecontributor">
                                                                 <i class="bx bx-trash-alt text-danger" style="font-size: 20px;"></i>
                                                             </button>
 
@@ -206,7 +232,7 @@ include "dbconnect.php";
 
     <!-- Right bar overlay-->
     <div class="rightbar-overlay"></div>
-    <!--Add  Modal -->
+    <!--  Modal -->
     <div class="modal fade" id="addContributor" tabindex="-1" aria-labelledby="addContributor" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -233,8 +259,8 @@ include "dbconnect.php";
                             </div>
                         </div>
                         <div class="mb-4">
-                            <select class="form-select" aria-label="Tribe" name="tribe">
-                                <option selected>Add Tribe</option>
+                            <select class="form-select" aria-label="Tribe" name="tribe" id='tribe' onchange="populateClans()">
+                                <option selected>Choose Tribe</option>
                                 <?php
                                 $sql = "SELECT * FROM `tribes`";
                                 $results = $conn->query($sql);
@@ -246,19 +272,9 @@ include "dbconnect.php";
                             </select>
                         </div>
                         <div class="mb-4">
-                            <select class="form-select" aria-label="Clan" name="clan">
-                                <option selected>Add Clan</option>
-                                <?php
-                                $sql = "SELECT * FROM `clans`";
-                                $results = $conn->query($sql);
-                                while ($clan = $results->fetch_assoc()) {
-                                ?>
-
-                                    <option value="<?php echo $clan['clan_id'] ?>"><?php echo $clan['clan_name'] ?></option>
-                                <?php } ?>
-                            </select>
-
-                            </select>
+                            <select class="form-select" aria-label="Clan" name="clan" id='clan'>
+                                <option selected>Choose Your Clan</option> 
+                            </select>   
                         </div>
                         <div class="mb-4">
                             <div class="input-group input-group-lg">
@@ -298,6 +314,117 @@ include "dbconnect.php";
 
     <!--end  Modal -->
 
+     <!--  Modal -->
+     <div class="modal fade" id="editContributor" tabindex="-1" aria-labelledby="addContributor" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Edit  Contributor</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="js-validation-signin" action="" method="POST">
+                        <input type="hidden" name="id" id="id">
+                        <div class="mb-4">
+                            <div class="input-group input-group-lg">
+                                <input type="text" class="form-control" name="surname" placeholder="Surname" id="surname">
+                                <span class="input-group-text">
+                                    <i class="bx bx-user-check"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <div class="input-group input-group-lg">
+                                <input type="text" class="form-control" name="othernames" placeholder="Othernames" id='othernames'>
+                                <span class="input-group-text">
+                                    <i class="bx bx-user-check"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <select class="form-select" aria-label="Tribe" name="tribe"  onchange="populateClans2()" id="tribe2">
+                                <option selected>Choose Tribe</option>
+                                <?php
+                                $sql = "SELECT * FROM `tribes`";
+                                $results = $conn->query($sql);
+                                while ($tribe = $results->fetch_assoc()) {
+                                ?>
+
+                                    <option value="<?php echo $tribe['tribe_id'] ?>"><?php echo $tribe['name'] ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <select class="form-select" aria-label="Clan" name="clan"  id="clan2">
+                                <option selected>Choose Your Clan</option> 
+                            </select>   
+                        </div>
+                        <div class="mb-4">
+                            <div class="input-group input-group-lg">
+                                <input type="text" class="form-control" name="contact" placeholder="contact" id="contact">
+                                <span class="input-group-text">
+                                    <i class="bx bxs-phone-call"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <div class="input-group input-group-lg">
+                                <input type="email" class="form-control" name="email" placeholder="Email" id="email">
+                                <span class="input-group-text">
+                                    <i class="bx bx-message-square-dots"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <div class="input-group input-group-lg">
+                                <input type="text" class="form-control" name="address" placeholder="Address" id="address">
+                                <span class="input-group-text">
+                                    <i class="bx bxs-map"></i>
+                                </span>
+                            </div>
+                        </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success" name="edit_contributor">Save Changes</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--end  Modal -->
+
+     <!--  Modal -->
+     <div class="modal fade" id="deletecontributor" tabindex="-1" aria-labelledby="addContributor" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Delete  Contributor</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="js-validation-signin" action="" method="POST">
+                        <input type="hidden" name="id" id="id2">
+                        <div class="mb-4">
+                            <h3 class="text-warning">
+                                Are you sure you want to delete this contributor
+                            </h3>
+                        </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger" name="delete">Proceed</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--end  Modal -->
     <!-- JAVASCRIPT -->
     <script src="assets/libs/jquery/jquery.min.js"></script>
     <script src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -326,6 +453,68 @@ include "dbconnect.php";
     <script src="assets/js/pages/datatables.init.js"></script>
 
     <script src="assets/js/app.js"></script>
+    <script>                
+            function populateClans() {
+                // get the selected tribe id
+                const tribeId = document.getElementById('tribe').value;
+
+                // make an AJAX request to fetch the clans for the selected tribe
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', 'getClans.php?tribe=' + tribeId, true);
+                xhr.send();
+                xhr.onreadystatechange = function() {
+                    if (this.readyState === 4 && this.status === 200) {
+                    // parse the response JSON and populate the clans select element with the options
+                    const clans = JSON.parse(this.responseText);
+                    const clanSelect = document.getElementById('clan');
+                    clanSelect.innerHTML = '<option value="">Select a clan</option>';
+                    clans.forEach((clan)=> {
+                        clanSelect.innerHTML += '<option value="' + clan.clan_id + '">' + clan.clan_name + '</option>';
+                    });
+                    }
+                };
+                
+            }
+
+            function populateClans2() {
+                // get the selected tribe id
+                const tribeId = document.getElementById('tribe2').value;
+
+                // make an AJAX request to fetch the clans for the selected tribe
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', 'getClans.php?tribe=' + tribeId, true);
+                xhr.send();
+                xhr.onreadystatechange = function() {
+                    if (this.readyState === 4 && this.status === 200) {
+                    // parse the response JSON and populate the clans select element with the options
+                    const clans = JSON.parse(this.responseText);
+                    const clanSelect = document.getElementById('clan2');
+                    clanSelect.innerHTML = '<option value="">Select a clan</option>';
+                    clans.forEach((clan)=> {
+                        clanSelect.innerHTML += '<option value="' + clan.clan_id + '">' + clan.clan_name + '</option>';
+                    });
+                    }
+                };
+                
+            }
+
+
+            function getData(id, surname, othernames, contact, email, address){
+                
+                document.getElementById('id').value = id;
+                 document.getElementById('surname').value = surname;
+                 document.getElementById('othernames').value = othernames;
+                 document.getElementById('contact').value = contact;
+                 document.getElementById('email').value = email;
+                 document.getElementById('address').value = address;
+            }
+
+            function getId(id){
+                document.getElementById('id2').value = id;
+
+            }
+
+        </script>
 
 </body>
 

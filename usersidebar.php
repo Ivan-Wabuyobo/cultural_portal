@@ -20,6 +20,13 @@
                     </a>
 
                 </li>
+                <li>
+                    <a href="user_translations.php" class="waves-effect">
+                        <i class="bx bx-user text-success"></i>
+                        <span key="t-dashboards">Translations</span>
+                    </a>
+
+                </li>
 
                 <li>
                     <a href="music.php" class="waves-effect">
@@ -72,14 +79,6 @@
                         <span key="t-dashboards">Know Your Clan</span>
                     </a>
 
-                </li>
-
-                
-                <li>
-                    <a href="feeback&support.php" class="waves-effect">
-                        <i class="bx bx-file text-success text-success"></i>
-                        <span key="t-file-manager">Feedback and Support</span>
-                    </a>
                 </li>
                 <li>
                     <a href="logout.php" class="waves-effect">

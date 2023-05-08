@@ -2,8 +2,6 @@
 session_start();
 if (!isset($_SESSION['user'])) {
     header("location:login.php");
-}elseif ($_SESSION['user']['role'] != 0){
-    header("location:login.php");
 }
 include "dbconnect.php";
 
@@ -14,7 +12,7 @@ include "dbconnect.php";
 <head>
 
     <meta charset="utf-8" />
-    <title>Cultural Food</title>
+    <title>Translations</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
     <meta content="Themesbrand" name="author" />
@@ -40,26 +38,22 @@ include "dbconnect.php";
 <body data-sidebar="dark" data-layout-mode="light">
 
     <?php
-    if (isset($_POST['add_music'])) {
-        if (!empty($_FILES)) {
-            $file = $_FILES['file'];
-            $targetDir = "food/";
-            $title = $_POST['title'];
+    if (isset($_POST['add_button'])) {
+        
             $tribe = $_POST['tribe'];
-            $description = $_POST['description'];
-            $uploaded_by = $_SESSION['user']['user_id'];
-            $targetFile = $targetDir.time().basename($file["name"]);
-            if (move_uploaded_file($file["tmp_name"], $targetFile)) {
-                $sql = "INSERT INTO `food`(`description`, `image`, `tribe`) VALUES ('$description', '$targetFile', '$tribe')";
+            $english = $_POST['english'];
+            $translation = $_POST['translation'];
+    
+
+                $sql = "INSERT INTO `translation`(`english_word`, `local_translation`, `tribe`) 
+                            VALUES ('$english', '$translation', '$tribe')";
                 $results = $conn->query($sql);
                 if ($results) {
                     $username =  $_SESSION['user']['username'];
                     $transaction_id = "#" . date('Ym') . time();
-                    $sql = "INSERT INTO `logs`(`transaction_id`, `transaction_type`, `user`) VALUES ('$transaction_id', 'Added cultural food into the system', '$username')";
+                    $sql = "INSERT INTO `logs`(`transaction_id`, `transaction_type`, `user`) VALUES ('$transaction_id', 'Added new translation into the system', '$username')";
                     $conn->query($sql);
                 }
-            }
-        }
 
     }
     ?>
@@ -87,7 +81,7 @@ include "dbconnect.php";
                     <div class="row">
                         <div class="col-12">
                             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                                <h4 class="mb-sm-0 font-size-18">Cultural Foods</h4>
+                                <h4 class="mb-sm-0 font-size-18">Translations</h4>
                             </div>
                         </div>
                     </div>
@@ -99,10 +93,10 @@ include "dbconnect.php";
                                 <div class="card-body">
                                     <div class="container">
                                         <div class="d-flex justify-content-between">
-                                            <h3>Food</h3>
+                                            <h3>Translations</h3>
                                             <span>
                                                 <button type="button" class="js-swal-confirm btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addtribe">
-                                                    <i class="fa fa-plus text-white me-1"></i> Add Food
+                                                    <i class="fa fa-plus text-white me-1"></i> Add Translation
                                                 </button>
                                             </span>
                                         </div>
@@ -112,9 +106,10 @@ include "dbconnect.php";
                                             <thead>
                                                 <tr>
 
-                                                    <th>Food</th>
+                                                    <th>English Term</th>
+                                                    <th>Corresponding Translation</th>
                                                     <th>Tribe</th>
-                                                    <th>Registered</th>
+                                                  
 
                                                 </tr>
                                             </thead>
@@ -137,20 +132,16 @@ include "dbconnect.php";
                                                         return round($difference / 31536000) . " years ago";
                                                     }
                                                 }
-                                                $sql = "SELECT * FROM `food` JOIN tribes ON food.tribe = tribes.tribe_id ORDER BY food_id DESC";
+                                                $sql = "SELECT * FROM `translation` JOIN tribes ON translation.tribe = tribes.tribe_id ORDER BY translation.id DESC";
                                                 $results = $conn->query($sql);
-                                                while ($music = $results->fetch_assoc()) {
+                                                while ($data = $results->fetch_assoc()) {
                                                 ?>
                                                     <tr>
-                                                        <td><?php echo $music['description'] ?></td>
-                                                        <td><?php echo $music['name']?></td>
-                                                        <td>
-                                                            <?php
-
-                                                            echo time_ago($music['uploaded_at'])
-
-                                                            ?>
-                                                        </td>
+                                                        <td><?php echo $data['english_word'] ?></td>
+                                                        <td><?php echo $data['local_translation']?></td>
+                                                        <td><?php echo $data['name']?></td>
+                                                       
+                                                        
                                                     </tr>
                                                 <?php
                                                 }
@@ -171,7 +162,7 @@ include "dbconnect.php";
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Add Food</h1>
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Add Translation</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
@@ -190,29 +181,22 @@ include "dbconnect.php";
                                         <label for="">Tribe</label>
 
                                     </div>
-                                
                                     <div class="mb-4">
                                         <div class="input-group input-group-lg">
-                                            <textarea class="form-control" name="description" placeholder="Description"></textarea>
-                                            <span class="input-group-text">
-                                                <i class="bx bx-dish text-success"></i>
-                                            </span>
+                                            <input type="text" class="form-control" name="english" placeholder="English Term">
                                         </div>
                                     </div>
-
                                     <div class="mb-4">
                                         <div class="input-group input-group-lg">
-                                            <input type="file" class="form-control" name="file" placeholder="Music file">
-                                            <span class="input-group-text">
-                                                <i class="bx bx-dish text-success"></i>
-                                            </span>
+                                            <input type="text" class="form-control" name="translation" placeholder="Translation">
                                         </div>
-                                    </div>
+                                    </div>   
                            
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-success" name="add_music">Save</button>
+                                <button type="submit" class="btn btn-success" name="add_button">Add Translation
+                                </button>
                             </div>
                             </form>
                         </div>
@@ -247,7 +231,7 @@ include "dbconnect.php";
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Change User Details</h1>
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Add Translation</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -326,4 +310,4 @@ include "dbconnect.php";
 
 </body>
 
-</html>
+</html> 

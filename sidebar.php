@@ -64,6 +64,14 @@
                     </a>
                 </li>
                 <li>
+                    <a href="admin_translation.php" class="waves-effect">
+                        <i class="bx bx-file text-success text-success"></i>
+                        <span key="t-file-manager">
+                            Translations
+                        </span>
+                    </a>
+                </li>
+                <li>
                     <a href="admin_music.php" class="waves-effect">
                         <i class="bx bx-music text-success text-success"></i>
                         <span key="t-file-manager">Music</span>
@@ -79,12 +87,6 @@
                     <a href="admin_fashion.php" class="waves-effect">
                         <i class="bx bxs-t-shirt text-success text-success"></i>
                         <span key="t-file-manager">Fashion and Design</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="chat.php" class="waves-effect">
-                        <i class="bx bx-message-rounded-dots text-success text-success"></i>
-                        <span key="t-file-manager">Chat center</span>
                     </a>
                 </li>
                 <li class="menu-title text-warning" key="t-apps">quiz Center</li>

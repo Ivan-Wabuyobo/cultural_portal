@@ -84,7 +84,7 @@ include "dbconnect.php";
                                                 <th>clan</th>
                                                 <th>Status</th>
                                                 <th>Registered</th>
-                                                <th>Action</th>
+                                               
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -106,7 +106,7 @@ include "dbconnect.php";
                                                     return round($difference / 31536000) . " year ago";
                                                 }
                                             }
-                                            $sql = "SELECT * FROM `articles` JOIN contributors ON contributors.id=articles.created_by JOIN tribes ON tribes.tribe_id = articles.article_id JOIN clans ON clans.clan_id = articles.article_id WHERE articles.status = '1'";
+                                            $sql = "SELECT * FROM `articles` JOIN contributors ON contributors.id=articles.created_by JOIN tribes ON tribes.tribe_id = articles.tribe JOIN clans ON clans.clan_id = articles.article_id WHERE articles.status = '1'";
                                             $results = $conn->query($sql);
 
                                             while ($articles = $results->fetch_assoc()) {
@@ -119,17 +119,7 @@ include "dbconnect.php";
                                                     <td>Approve</td>
                                                     <td><?php echo time_ago($articles['article_created_at']); ?></td>
 
-                                                    <td>
-                                                        <div class="input-group mb-3">
-                                                            <button class="btn">
-                                                                <i class="bx bx-pencil text-success " style="font-size: 20px;"></i>
-                                                            </button>
-                                                            <button class="btn">
-                                                                <i class="bx bx-trash-alt text-danger" style="font-size: 20px;"></i>
-                                                            </button>
-
-                                                        </div>
-                                                    </td>
+                                                  
                                                 </tr>
                                             <?php } ?>
                                         </tbody>

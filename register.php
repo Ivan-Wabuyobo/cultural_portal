@@ -1,3 +1,7 @@
+<?php 
+session_start();
+include 'dbconnect.php';
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -20,6 +24,34 @@
     </head>
 
     <body>
+        <?php
+         if (isset($_POST['add_member'])) {
+            $surname = $_POST['surname'];
+            $othernames = $_POST['othernames'];
+            $contact = $_POST['contact'];
+            $address = $_POST['address'];
+            $tribe = $_POST['tribe'];
+            $clan = $_POST['clan'];
+            $sql = "INSERT INTO `members`(`surname`, `contact`, `tribe`, `clan`, `other_names`, `address`) VALUES ('$surname', '$contact', '$tribe', '$clan', '$othernames', '$address')";
+            $results = $conn->query($sql);
+            if ($results) {
+                $username =  $_SESSION['user']['username'];
+                $transaction_id = "#" . date('Ym') . time();
+                $userId = mysqli_insert_id($conn);
+                $sql = "INSERT INTO `logs`(`transaction_id`, `transaction_type`, `user`) VALUES ('$transaction_id', 'A new member was added', '$username')";
+                $conn->query($sql);
+    
+                  //insert into users
+                  $username = $contact;
+                  $role = "2";
+                  $password = time();
+                  $sql = "INSERT INTO `users`(`username`, `password`, `role`, `user_id`)
+                               VALUES ('$username', '$password', '$role', '$userId')";
+                  $conn->query($sql);
+      
+            }
+        }
+        ?>
         
         <div class="account-pages my-5 pt-sm-5">
             <div class="container">
@@ -50,34 +82,61 @@
                                     </a>
                                 </div>
                                 <div class="p-2">
-                                    <form class="needs-validation" novalidate action="https://themesbrand.com/skote/layouts/index.html">
+                                    <form class="needs-validation" novalidate action="" method="post">
             
-                                        <div class="mb-3">
-                                            <label for="useremail" class="form-label">Email</label>
-                                            <input type="email" class="form-control" id="useremail" placeholder="Enter email" required>  
-                                            <div class="invalid-feedback">
-                                                Please Enter Email
-                                            </div>      
-                                        </div>
-                
-                                        <div class="mb-3">
-                                            <label for="username" class="form-label">Username</label>
-                                            <input type="text" class="form-control" id="username" placeholder="Enter username" required>
-                                            <div class="invalid-feedback">
-                                                Please Enter Username
-                                            </div>  
-                                        </div>
-                
-                                        <div class="mb-3">
-                                            <label for="userpassword" class="form-label">Password</label>
-                                            <input type="password" class="form-control" id="userpassword" placeholder="Enter password" required>
-                                            <div class="invalid-feedback">
-                                                Please Enter Password
-                                            </div>       
-                                        </div>
+                                        <div class="mb-4">
+                            <div class="input-group input-group-lg">
+                                <input type="text" class="form-control" name="surname" placeholder="Surname">
+                                <span class="input-group-text">
+                                    <i class="bx bx-user-check"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <div class="input-group input-group-lg">
+                                <input type="text" class="form-control" name="othernames" placeholder="Othernames">
+                                <span class="input-group-text">
+                                    <i class="bx bx-user-check"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <select class="form-select" aria-label="Tribe" name="tribe" id='tribe' onchange="populateClans()">
+                                <option selected>Choose Tribe</option>
+                                <?php
+                                $sql = "SELECT * FROM `tribes`";
+                                $results = $conn->query($sql);
+                                while ($tribe = $results->fetch_assoc()) {
+                                ?>
+
+                                    <option value="<?php echo $tribe['tribe_id'] ?>"><?php echo $tribe['name'] ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <select class="form-select" aria-label="Clan" name="clan" id='clan'>
+                                <option selected>Choose Your Clan</option> 
+                            </select>   
+                        </div>
+                        <div class="mb-4">
+                            <div class="input-group input-group-lg">
+                                <input type="text" class="form-control" name="contact" placeholder="contact">
+                                <span class="input-group-text">
+                                    <i class="bx bxs-phone-call"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <div class="input-group input-group-lg">
+                                <input type="text" class="form-control" name="address" placeholder="Address">
+                                <span class="input-group-text">
+                                    <i class="bx bxs-map"></i>
+                                </span>
+                            </div>
+                        </div>
                     
                                         <div class="mt-4 d-grid">
-                                            <button class="btn btn-primary waves-effect waves-light" type="submit">Register</button>
+                                            <button class="btn btn-primary waves-effect waves-light" type="submit" name='add_member'>Register</button>
                                         </div>
                                         <div class="mt-4 text-center">
                                             <p class="mb-0">By registering you agree to the cultural portal<a href="#" class="text-primary">Terms of Use</a></p>
@@ -112,6 +171,30 @@
         
         <!-- App js -->
         <script src="assets/js/app.js"></script>
+        <script>                
+            function populateClans() {
+                // get the selected tribe id
+                const tribeId = document.getElementById('tribe').value;
+
+                // make an AJAX request to fetch the clans for the selected tribe
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', 'getClans.php?tribe=' + tribeId, true);
+                xhr.send();
+                xhr.onreadystatechange = function() {
+                    if (this.readyState === 4 && this.status === 200) {
+                    // parse the response JSON and populate the clans select element with the options
+                    const clans = JSON.parse(this.responseText);
+                    const clanSelect = document.getElementById('clan');
+                    clanSelect.innerHTML = '<option value="">Select a clan</option>';
+                    clans.forEach((clan)=> {
+                        clanSelect.innerHTML += '<option value="' + clan.clan_id + '">' + clan.clan_name + '</option>';
+                    });
+                    }
+                };
+                
+                }
+
+        </script>
 
     </body>
 
