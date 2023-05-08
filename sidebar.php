@@ -89,12 +89,6 @@
                         <span key="t-file-manager">Fashion and Design</span>
                     </a>
                 </li>
-                <li>
-                    <a href="chat.php" class="waves-effect">
-                        <i class="bx bx-message-rounded-dots text-success text-success"></i>
-                        <span key="t-file-manager">Chat center</span>
-                    </a>
-                </li>
                 <li class="menu-title text-warning" key="t-apps">quiz Center</li>
                 <li>
                     <a href="quiz.php" class="waves-effect">

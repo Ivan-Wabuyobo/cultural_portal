@@ -81,7 +81,7 @@ include "dbconnect.php";
                     <div class="row">
                         <div class="col-12">
                             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                                <h4 class="mb-sm-0 font-size-18">System Users</h4>
+                                <h4 class="mb-sm-0 font-size-18">Translations</h4>
                             </div>
                         </div>
                     </div>
@@ -93,7 +93,7 @@ include "dbconnect.php";
                                 <div class="card-body">
                                     <div class="container">
                                         <div class="d-flex justify-content-between">
-                                            <h3>Tribes</h3>
+                                            <h3>Translations</h3>
                                             <span>
                                                 <button type="button" class="js-swal-confirm btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addtribe">
                                                     <i class="fa fa-plus text-white me-1"></i> Add Translation

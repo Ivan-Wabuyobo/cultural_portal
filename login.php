@@ -207,7 +207,7 @@ include "dbconnect.php";
                                         <div class="mt-5 text-center">
                                             <p>
                                                 Don't have an account ?
-                                                <a href="auth-register-2.html" class="fw-medium text-primary">
+                                                <a href="register.php" class="fw-medium text-primary">
                                                     Signup now
                                                 </a>
                                             </p>
