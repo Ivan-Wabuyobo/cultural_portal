@@ -153,7 +153,7 @@ include "dbconnect.php";
                                                                 <i class="bx bx-lock text-success" style="font-size: 20px;"></i>
                                                                 change details
                                                             </button>
-                                                            <button class="btn change_btn" data-bs-toggle="modal" data-bs-target="#user">
+                                                            <button class="btn change_btn" data-bs-toggle="modal" data-bs-target="">
                                                                 <i class="bx bx-log-in-circle text-success" style="font-size: 20px;"></i>
                                                                 Send details
                                                             </button>
